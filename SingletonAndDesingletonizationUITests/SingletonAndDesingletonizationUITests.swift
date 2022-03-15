@@ -11,15 +11,21 @@ import UIKit
 class SingletonAndDesingletonizationUITests: XCTestCase {
     
     func test_main() {
-        var computedValue: Int {
-            return 3 + 4
-        }
-        var setValue = 3 + 4
         
-        print("finished")
     }
 
 }
+// main module
+
+extension ApiClient: LoginApi{
+    func login(completion: @escaping (LoggedInUser) -> Void) {}
+}
+
+extension ApiClient {
+    func feed(completion: @escaping ([FeedItem]) -> Void) {}
+}
+
+//api module
 
 class ApiClient {
     static let shared = ApiClient()
@@ -31,8 +37,8 @@ class ApiClient {
 
 struct LoggedInUser {}
 
-extension ApiClient {
-    func login(completion: (LoggedInUser) -> Void) {}
+protocol LoginApi {
+    func login(completion: @escaping (LoggedInUser) -> Void)
 }
 
 class LoginViewController: UIViewController {
@@ -40,6 +46,24 @@ class LoginViewController: UIViewController {
     
     func didTapped() {
         login? { user in
+            
+        }
+    }
+}
+
+// feed module
+
+struct FeedItem {}
+
+class FeedService {
+    let loadFeed: (([FeedItem]) -> Void) -> Void
+    
+    init(loadFeed: @escaping (([FeedItem]) -> Void) -> Void) {
+        self.loadFeed = loadFeed
+    }
+    
+    private func load() {
+        loadFeed { feedItems in
             
         }
     }
