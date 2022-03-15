@@ -6,28 +6,60 @@
 //
 
 import XCTest
+import UIKit
 @testable import SingletonAndDesingletonization
 
-class SingletonAndDesingletonizationTests: XCTestCase {
+class SingletonAndDesingletonizationTests: XCTestCase {}
+// main module
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+extension ApiClient: LoginApi{
+    func login(completion: @escaping (LoggedInUser) -> Void) {}
+}
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+extension ApiClient {
+    func feed(completion: @escaping ([FeedItem]) -> Void) {}
+}
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+//api module
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+class ApiClient {
+    static let shared = ApiClient()
+    
+    func execute(_ request: URLRequest, completion: (Data) -> Void) {}
+}
+
+//login module
+
+struct LoggedInUser {}
+
+protocol LoginApi {
+    func login(completion: @escaping (LoggedInUser) -> Void)
+}
+
+class LoginViewController: UIViewController {
+    var login: (((LoggedInUser) -> Void) -> Void)?
+    
+    func didTapped() {
+        login? { user in
+            
         }
     }
+}
 
+// feed module
+
+struct FeedItem {}
+
+class FeedService {
+    let loadFeed: (([FeedItem]) -> Void) -> Void
+    
+    init(loadFeed: @escaping (([FeedItem]) -> Void) -> Void) {
+        self.loadFeed = loadFeed
+    }
+    
+    private func load() {
+        loadFeed { feedItems in
+            
+        }
+    }
 }
